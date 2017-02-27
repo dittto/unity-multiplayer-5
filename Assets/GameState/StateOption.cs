@@ -5,8 +5,8 @@ namespace GameState
     public struct StateOption
     {
         public string oldNetwork;
-        public string oldGame;
         public string newNetwork;
+        public string oldGame;
         public string newGame;
 
         public StateOption (string oldNetworkState = "", string oldGameState = "", string newNetworkState = "", string newGameState = "")
@@ -45,7 +45,14 @@ namespace GameState
             return this;
         }
 
-        public bool Matches (string oldNetworkState, string oldGameState, string newNetworkState, string newGameState)
+        public bool Matches (
+            string oldNetworkState,
+            string oldGameState,
+            string newNetworkState,
+            string newGameState,
+            bool isNetworkDirty,
+            bool isGameDirty
+        )
         {
             if (oldNetwork != null && oldNetwork != "" && oldNetworkState != "" && oldNetwork != oldNetworkState) {
                 return false;
@@ -60,6 +67,17 @@ namespace GameState
             }
 
             if (newGame != null && newGame != "" && newGameState != "" && newGame != newGameState) {
+                return false;
+            }
+
+            bool anyDirty = false;
+            if ((oldNetwork != null && oldNetwork != "") || (newNetwork != null && newNetwork != "") && isNetworkDirty) {
+                anyDirty = true;
+            }
+            if ((oldGame != null && oldGame != "") || (newGame != null && newGame != "") && isGameDirty) {
+                anyDirty = true;
+            }
+            if (!anyDirty) {
                 return false;
             }
 
